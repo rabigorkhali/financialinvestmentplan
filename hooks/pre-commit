@@ -1,0 +1,111 @@
+#!/bin/bash
+PHP_CS_FIXER="php php-cs-fixer"
+PHP_LINTER="php -l"
+HAS_PHP_CS_FIXER=false
+CONFIGFILE="${PWD}/.php_cs.php"
+COUNTFILES=`git status --porcelain | grep -e '^[AM]\(.*\).php$' -c`
+
+# Color Variables
+red='\033[0;31m'
+green='\033[0;32m'
+yellow='\033[0;33m'
+no_color='\033[0m'
+color_bold_black='\033[1;30m'
+
+
+###
+# Background
+###
+color_background_green='\033[42m'
+color_reset='\033[0m'
+
+###########
+# Functions
+###########
+
+function message_failure() {
+    printf "${color_bold_white}${color_background_red} 🤦  $1 ${color_reset}\n"
+}
+
+function message_success() {
+    printf "${color_bold_black}${color_background_green} $1 🍺  ${color_reset}\n"
+}
+
+function error_header_message() {
+    echo "\n"
+    echo "${red}=========================================="
+    echo "$1"
+    echo "==========================================${no_color}"
+    echo "\n"
+}
+
+function warning_header_message() {
+    echo "\n"
+    echo "${yellow}=========================================="
+    echo "$1"
+    echo "==========================================${no_color}"
+    echo "\n"
+}
+
+
+######################
+# Begin Check
+######################
+
+
+php_lint_errors=false
+while read line; do
+    php_lint_output=`php -l -d display_errors=On $line 2>&1 | grep 'PHP Parse error:'`
+
+    # If it did contain errors, we have output.
+    if [ -n "$php_lint_output" ]; then
+        # Printing error message.
+        message_failure "$php_lint_output"
+        php_lint_errors=true
+    fi
+done <<< "$(git status --porcelain | grep -e '^[AM]\(.*\).php$' | cut -c 3-)"
+
+
+if [ "$php_lint_errors" = false ]; then
+    message_success 'No Errors Found - PHP Lint(Syntax check only)'
+else
+    warning_header_message "Fix above errors before commiting"
+    exit 1;
+fi
+
+if [ -f ./php-cs-fixer ]; then
+    HAS_PHP_CS_FIXER=true
+    warning_header_message "Using Config file: $CONFIGFILE"
+fi
+
+if $HAS_PHP_CS_FIXER; then
+    git status --porcelain | grep -e '^[AM]\(.*\).php$' | cut -c 3- | while read line; do
+        $PHP_CS_FIXER fix --config=${CONFIGFILE} --verbose "$line";
+
+        correction_code=$? # if php-cs-fixer fix works, it returns 0
+
+        # HERE, if returns 0, add stage it again
+        if [[ ${correction_code} -eq 0 ]]; then
+            git add "$line" # execute git add directly
+        fi
+
+    done
+
+
+    echo "${green}=========================================="
+    echo "=========================================="
+    echo "       Staged Files Were Linted           "
+    echo "=========================================="
+    echo "==========================================${no_color}"
+else
+    warning_header_message "It seems like you are not following the code linter  \nPhpcs config and Phpcsfixture was not found. Please \nadd before commiting files"
+    exit 1;
+fi
+
+echo "${green}=========================================="
+echo "=========================================="
+echo "           Have Fun While Coding          "
+echo "=========================================="
+echo "==========================================${no_color}"
+
+exit 0;

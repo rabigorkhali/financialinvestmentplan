@@ -1,0 +1,39 @@
+<?php
+
+namespace App\Http\Middleware;
+
+use App\Services\System\LanguageService;
+use Closure;
+use Config;
+use Cookie;
+use Illuminate\Support\Facades\View;
+
+class Language
+{
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @return mixed
+     */
+    public function __construct(private readonly LanguageService $languageService)
+    {
+    }
+
+    public function handle($request, Closure $next)
+    {
+        if (Cookie::get('lang') !== null) {
+            $locale = Cookie::get('lang');
+        } elseif (session()->get('lang') !== null) {
+            $locale = session()->get('lang');
+        } else {
+            $locale = Config::get('constants.DEFAULT_LOCALE');
+        }
+
+        app()->setlocale($locale);
+        View::share('globalLocale', $locale);
+
+        return $next($request);
+    }
+}
