@@ -79,10 +79,10 @@ class EmailTemplateSeeder extends Seeder
                     [
                         'language_code' => 'en',
                         'subject' => 'Account has been created in ekcms',
-                        'template' => $templateHeader.'
+                        'template' => $templateHeader . '
                     <p>Dear %user_name%,</p>
                     <p>Your account has been created in ekcms. Please contact admin to get your credential.</p>
-                    '.$templateFooter,
+                    ' . $templateFooter,
                     ],
                 ],
 
@@ -96,11 +96,11 @@ class EmailTemplateSeeder extends Seeder
                     [
                         'language_code' => 'en',
                         'subject' => 'Password set link',
-                        'template' => $templateHeader.'
+                        'template' => $templateHeader . '
                         <p>Dear %user_name%,</p>
                         <p>Your account has been created in ekcms. Please click the link below to set your password.</p>
                         <p>Link : %password_set_link%</p>
-                            '.$templateFooter,
+                            ' . $templateFooter,
                     ],
                 ],
 
@@ -114,11 +114,11 @@ class EmailTemplateSeeder extends Seeder
                     [
                         'language_code' => 'en',
                         'subject' => 'Password Reset Link',
-                        'template' => $templateHeader.'
+                        'template' => $templateHeader . '
                                         <p>Dear %user_name%,</p>
                                         <p>As per your request we have generated a password reset link. Please click the link below to reset your password.</p>
                                         <p>Link : %password_reset_link%</p>
-                                            '.$templateFooter,
+                                            ' . $templateFooter,
                     ],
                 ],
 
@@ -132,11 +132,11 @@ class EmailTemplateSeeder extends Seeder
                     [
                         'language_code' => 'en',
                         'subject' => 'Verification Code',
-                        'template' => $templateHeader.'
+                        'template' => $templateHeader . '
                                 <p>Dear %user_name%,</p>
                                 <p>Please copy the verification code below.</p>
                                 <p>Code : %verification_code%</p>
-                                    '.$templateFooter,
+                                    ' . $templateFooter,
                     ],
                 ],
             ],
@@ -149,17 +149,17 @@ class EmailTemplateSeeder extends Seeder
                     [
                         'language_code' => 'en',
                         'subject' => 'Profile Update',
-                        'template' => $templateHeader.'
+                        'template' => $templateHeader . '
                                 <p>Dear %user_name%,</p>
                                 <p>Your profile have been updated succesfully.</p>
-                                    '.$templateFooter,
+                                    ' . $templateFooter,
                     ],
                 ],
             ],
         ];
-         // \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        EmailTemplate::truncate();
-        EmailTemplateTranslation::truncate();
+        // \DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+        // EmailTemplate::truncate();
+        // EmailTemplateTranslation::truncate();
         foreach ($templates as $template) {
             $data = [
                 'title' => $template['title'],
@@ -168,9 +168,12 @@ class EmailTemplateSeeder extends Seeder
                 'placeholders' => $template['placeholders'],
 
             ];
-            $email = EmailTemplate::create($data);
-            $email->emailTranslations()->createMany($template['translations']);
+            $exist = EmailTemplate::where('code', $template['code'])->first();
+            if (!$exist) {
+                $email = EmailTemplate::create($data);
+                $email->emailTranslations()->createMany($template['translations']);
+            }
         }
-         // \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        // \DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }
