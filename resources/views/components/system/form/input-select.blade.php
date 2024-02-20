@@ -1,4 +1,4 @@
-<select class="form-select mb-3 {{ isset($input['error']) && $input['error'] !== '' ? 'is-invalid' : '' }}"
+<select class="form-select  {{ isset($input['error']) && $input['error'] !== '' ? 'is-invalid' : '' }}"
     {{ isset($input['disabled']) && $input['disabled'] !== '' ? 'disabled' : '' }}
     {{ isset($input['multiple']) ? 'multiple' : '' }} {{ isset($input['required']) ? 'required' : '' }}
      data-prefix="{{ getSystemPrefix() }}" data-url="{{ url('/') }}"

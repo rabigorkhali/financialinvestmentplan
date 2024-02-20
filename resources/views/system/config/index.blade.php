@@ -118,11 +118,12 @@
                                       enctype="multipart/form-data">
                                     @csrf
                                     <x-system.form.form-inline-group
-                                        :input="['name' => 'label', 'label' => 'Label', 'default' => old('label'), 'required' => true, 'error' => $errors->first('label')]"/>
-                                    <x-system.form.form-inline-group :input="['name' => 'type', 'label' => 'Type']">
+                                        :input="['name' => 'label', 'class'=>'m-2','label' => 'Label', 'default' => old('label'), 'required' => true, 'error' => $errors->first('label')]"/>
+                                   
+                                        <x-system.form.form-inline-group :input="['name' => 'type', 'class'=>'m-2','label' => 'Type']">
                                         <x-slot name="inputs">
                                             <x-system.form.input-select
-                                                :input="['name'=>'type', 'label'=>'Type', 'placeholder' => 'Select Type', 'default' => old('type'), 'options' => $types, 'error'=>$errors->first('type')]"/>
+                                                :input="['name'=>'type','class'=>'m-2', 'label'=>'Type', 'placeholder' => 'Select Type', 'default' => old('type'), 'options' => $types, 'error'=>$errors->first('type')]"/>
                                         </x-slot>
                                     </x-system.form.form-inline-group>
 
@@ -146,7 +147,7 @@
                                             </x-slot>
                                         </x-system.form.form-inline-group>
                                     </div>
-                                    <button class="btn btn-primary" type="submit"><em
+                                    <button class="btn btn-primary m-2" type="submit"><em
                                             class="fa fa-save"></em> {{translate('Save')}}</button>
                                 </form>
                             </div>
