@@ -48,7 +48,7 @@ class indexController extends ResourceController
     public function initiateLogin(Request $request)
     {
         $redirectUrl = route('access.token');
-        return redirect()->away("https://kite.zerodha.com/connect/login?v=3&api_key=$this->apiKey&redirect_params=some%3DX%26more%3DY&redirect_url=$redirectUrl");
+        return redirect()->away("https://kite.zerodha.com/connect/login?v=3&api_key=$this->apiKey&redirect_url=$redirectUrl");
     }
 
     public function getAccessToken(Request $request)
