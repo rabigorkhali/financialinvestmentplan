@@ -2,12 +2,22 @@
 
 namespace App\Http\Controllers\System;
 
+use App\Services\ApiService;
 use Illuminate\Http\Request;
 
 class indexController extends ResourceController
 {
+
+    protected $model;
+    protected $client;
+    protected $apiKey;
+    protected $apiSecret;
+
     public function __construct()
     {
+        $this->apiKey = '8n4x6prssz4i5tnw';
+
+        $this->apiService = new ApiService();
     }
 
     /**
@@ -33,5 +43,18 @@ class indexController extends ResourceController
     public function viewFolder()
     {
         return 'system.home';
+    }
+
+    public function initiateLogin(Request $request)
+    {
+        $redirectUrl = route('access.token');
+        return redirect()->away("https://kite.zerodha.com/connect/login?v=3&api_key=$this->apiKey&redirect_params=some%3DX%26more%3DY&redirect_url=$redirectUrl");
+    }
+
+    public function getAccessToken(Request $request)
+    {
+        $apiService = $this->apiService;
+        $apiResponse = $apiService->getAccessToken($request);
+        dd($apiResponse);
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\System\indexController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -34,6 +35,8 @@ Route::group(['namespace' => 'System', 'prefix' => getSystemPrefix(), 'middlewar
 
     Route::group(['middleware' => ['auth', 'permission', 'twofa', 'reset.password']], function () {
         Route::get('/home', 'indexController@index')->name('home');
+        Route::get('/trigger-strategy', 'indexController@initiateLogin')->name('trigger.strategy');
+        Route::get('/kite/callback', [indexController::class, 'getAccessToken'])->name('access.token');
         Route::resource('/roles', 'user\RoleController', ['except' => ['show']]);
 
         Route::resource('/users', 'user\UserController', ['except' => ['show']]);

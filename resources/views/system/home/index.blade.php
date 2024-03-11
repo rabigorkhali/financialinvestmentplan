@@ -2,7 +2,7 @@
 @section('contents')
  <div class="container-fluid default-dash">
         <div class="row">
-            <div class="col-xl-6 col-md-6 dash-xl-50">
+            <div class="col-xl-12 col-md-12 dash-xl-50">
                 <div class="card profile-greeting">
                     <div class="card-body">
                         <div class="media">
@@ -17,6 +17,9 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="col-xl-6 col-md-6 dash-xl-50">
+                <a href="{{route('trigger.strategy')}}" class="btn btn-sm btn-info">Force Trigger Strategy</a>
             </div>
         </div>
     </div>
